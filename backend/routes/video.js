@@ -1,21 +1,24 @@
 import express from 'express';
 import {Video} from '../models/Video.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
+import { getDriveMetadata } from '../services/fetchMetadata.js';
 
 export const router = express.Router();
 
 router.post("/upload", authMiddleware, async(req, res)=>{
-    const { title, description, tags, url } = req.body;
+    const { keywords, url } = req.body;
 
-    if (!title || !url) {
-        return res.status(400).json({ message: "Title and URL are required" });
+    if (!keywords || !url) {
+        return res.status(400).json({ message: "Keywords and URL are required" });
     }
 
     try {
+        const tags = keywords.split(", ");
+        const metadata = getDriveMetadata(url);
         const video = await Video.create({
             user: req.user.id,
-            title,
-            description,
+            title : metadata.title,
+            description: metadata.description,
             tags,
             url
         });
