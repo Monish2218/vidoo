@@ -14,7 +14,7 @@ router.post("/upload", authMiddleware, async(req, res)=>{
 
     try {
         const tags = keywords.split(", ");
-        const metadata = getDriveMetadata(url);
+        const metadata = await getDriveMetadata(url);
         const video = await Video.create({
             user: req.user.id,
             title : metadata.title,
