@@ -38,9 +38,9 @@ router.get("/my-videos", authMiddleware, async(req, res)=>{
     }
 });
 
-router.get("/:id", async(req, res)=>{
+router.get("/:id", authMiddleware, async(req, res)=>{
     try {
-        const video = await Video.findById(req.params.id);
+        const video = await Video.find({_id: req.params.id, user: req.user.id});
         if (!video) {
             return res.status(404).json({ message: "Video not found" });
         }
