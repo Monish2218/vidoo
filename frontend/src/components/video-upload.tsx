@@ -22,10 +22,10 @@ export function VideoUpload() {
       <div className="max-w-3xl mx-auto space-y-8 text-center">
         <div className="space-y-2">
           <h1 className="text-4xl font-bold text-white">
-            Now Repurpose long video, 10x faster.
+            Now Repurpose your videos, 10x faster.
           </h1>
           <p className="text-lg text-white/90">
-            Sierra allows you to create new video content in just a few clicks, saving you time and effort.
+            Vidoo allows you to manage video content in just a few clicks, saving you time and effort.
           </p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">

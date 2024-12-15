@@ -10,7 +10,7 @@ export default function NavBar() {
           <div className="flex justify-between items-center py-4">
             <Link to="/" className="flex items-center space-x-2">
               <Film className="h-8 w-8 text-purple-600" />
-              <span className="text-2xl font-bold text-gray-900">Sierra</span>
+              <span className="text-2xl font-bold text-gray-900">Vidoo</span>
             </Link>
             <nav className="hidden md:flex space-x-4">
               <NavL href="/" icon={<Home className="h-5 w-5" />}>Home</NavL>
