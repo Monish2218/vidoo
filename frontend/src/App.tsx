@@ -5,6 +5,7 @@ import { VideoGrid } from './components/video-grid';
 import { VideoDetail } from './components/video-detail';
 import Home from '@/components/home';
 import NavBar from './components/nav/NavBar';
+import Footer from './components/footer';
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
         <Route path='/videos' element={<VideoGrid/>} />
         <Route path='/video' element={<VideoDetail/>} />
       </Routes>
+      <Footer />
     </Router>
   )
 }
