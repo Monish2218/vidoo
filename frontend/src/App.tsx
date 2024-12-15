@@ -1,4 +1,4 @@
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Routes, Route} from 'react-router';
 import { AuthForm } from './components/auth-form';
 import { VideoUpload } from './components/video-upload';
 import { VideoGrid } from './components/video-grid';
@@ -8,8 +8,10 @@ function App() {
 
   return (
     <Router>
+
       <Routes>
         <Route path="/" element={<AuthForm />} />
+        <Route path="/auth" element={<AuthForm />} />
         <Route path='/upload' element={<VideoUpload/>} />
         <Route path='/grid' element={<VideoGrid/>} />
         <Route path='/detail' element={<VideoDetail/>} />
