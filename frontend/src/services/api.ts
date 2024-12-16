@@ -2,10 +2,13 @@ import axios from 'axios'
 
 const api = axios.create({
   baseURL: 'http://localhost:5000/api',
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem('token')}`
+  }
 })
 
 export const uploadVideo = async (videoUrl: string, keywords: string) => {
-  const response = await api.post('/videos/upload', { videoUrl, keywords })
+  const response = await api.post('/videos/upload', { url: videoUrl, keywords })
   return response.data
 }
 

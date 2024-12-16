@@ -4,17 +4,27 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { uploadVideo } from "@/services/api"
+import { CustomError } from "@/services/types"
 
 export function VideoUpload() {
   const [videoUrl, setVideoUrl] = useState("")
   const [keywords, setKeywords] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    // TODO: Implement video upload logic
-    setIsLoading(false)
+    setError("")
+    try {
+      const data = await uploadVideo(videoUrl, keywords);
+      console.log(data)
+    } catch (error:unknown) {
+      setError((error as CustomError)?.response?.data?.message || "An error occurred")
+    } finally {
+      setIsLoading(false)
+    } 
   }
 
   return (
@@ -49,6 +59,7 @@ export function VideoUpload() {
             {isLoading ? "Processing..." : "Call to Action"}
           </Button>
         </form>
+        {error && <p className="mt-4 text-sm text-red-600 bg-purple-300">{error}</p>}
       </div>
     </div>
   )

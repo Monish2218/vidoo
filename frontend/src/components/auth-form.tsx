@@ -23,8 +23,8 @@ export function AuthForm() {
     try {
       if(isLogin){
         const token = await login(email, password);
-        setAuthToken(token);
-        localStorage.setItem('token', token);
+        setAuthToken(token.token);
+        localStorage.setItem('token', token.token);
       } else {
         const name = formData.get('name') as string;
         await register(name, email, password);
