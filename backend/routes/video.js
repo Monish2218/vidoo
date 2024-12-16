@@ -15,6 +15,9 @@ router.post("/upload", authMiddleware, async(req, res)=>{
     try {
         const tags = keywords.split(", ");
         const metadata = await getDriveMetadata(url);
+        if(!metadata){
+            return res.status(400).json({ message: "Failed to fetch metadata. Make sure the url is correct and the video's visibility is set to public" });
+        }
         const video = await Video.create({
             user: req.user.id,
             title : metadata.title,
