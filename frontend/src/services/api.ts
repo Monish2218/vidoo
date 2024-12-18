@@ -1,11 +1,19 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem('token')}`
-  }
+  baseURL: 'http://localhost:5000/api'
 })
+
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(new Error(`Request configuration failed: ${error.message}`))
+)
 
 export const uploadVideo = async (videoUrl: string, keywords: string) => {
   const response = await api.post('/videos/upload', { url: videoUrl, keywords })
