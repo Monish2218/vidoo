@@ -17,7 +17,7 @@ function App() {
         <Route path="/auth" element={<AuthForm />} />
         <Route path='/upload' element={<VideoUpload/>} />
         <Route path='/videos' element={<VideoGrid/>} />
-        <Route path='/video' element={<VideoDetail/>} />
+        <Route path='/video/:id' element={<VideoDetail/>} />
       </Routes>
       <Footer />
     </Router>
