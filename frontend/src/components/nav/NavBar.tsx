@@ -1,9 +1,17 @@
 import { Link, NavLink, useNavigate } from "react-router"
 import { Button } from "../ui/button"
 import { Home, Upload, Film, User } from 'lucide-react'
+import { useAuth } from "@/context/AuthContext";
+import toast from "react-hot-toast";
 
 export default function NavBar() {
     const navigate = useNavigate();
+    const {user, logout} = useAuth();
+    const handleSignOut = () => {
+      logout();
+      toast.success("Logged out successfully");
+      navigate('/');
+    }
   return (
     <header className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,8 +27,7 @@ export default function NavBar() {
               <NavL href="/profile" icon={<User className="h-5 w-5" />}>Profile</NavL>
             </nav>
             <div className="flex items-center space-x-4">
-              <Button onClick={()=>navigate("/auth")} variant="outline">Sign In</Button>
-              <Button onClick={()=>navigate("/auth")}>Sign Up</Button>
+             {user? <Button onClick={handleSignOut} variant="outline">Sign Out</Button>:<Button onClick={()=>navigate("/auth")} variant="outline">Sign In</Button>}
             </div>
           </div>
         </div>
@@ -28,7 +35,7 @@ export default function NavBar() {
   )
 }
 
-function NavL({ href, icon, children }: { href: string, icon: React.ReactNode, children: React.ReactNode }) {  
+function NavL({ href, icon, children }: { readonly href: string, readonly icon: React.ReactNode, readonly children: React.ReactNode }) {  
     return (
       <NavLink to={href} className={({isActive})=> `flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium ${
     isActive

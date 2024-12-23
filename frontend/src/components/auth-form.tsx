@@ -3,14 +3,17 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { login, register, setAuthToken } from "@/services/api"
+import { login, register } from "@/services/api"
 import { useNavigate } from "react-router"
 import { CustomError } from "@/services/types"
+import toast from "react-hot-toast"
+import { useAuth } from "@/context/AuthContext"
 
 export function AuthForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const navigate = useNavigate();
+  const {login : setAuthContext} = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, isLogin: boolean) => {
     e.preventDefault()
@@ -22,14 +25,15 @@ export function AuthForm() {
 
     try {
       if(isLogin){
-        const token = await login(email, password);
-        setAuthToken(token.token);
-        localStorage.setItem('token', token.token);
+        const data = await login(email, password);
+        setAuthContext(data.token, data.user);
+        toast.success("Logged in successfully");
+        navigate('/upload');
       } else {
         const name = formData.get('name') as string;
         await register(name, email, password);
-      }
-      navigate('/upload');
+        toast.success("Registered successfully");
+      }     
     } catch (error: unknown) {
       setError((error as CustomError)?.response?.data?.message || "An error occurred")
     } finally{
