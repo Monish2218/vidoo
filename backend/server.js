@@ -16,8 +16,8 @@ app.get('/', (req, res)=>{
     res.send('Hello World!');
 })
 
-app.use("/api/auth", authRouter);
-app.use("/api/videos", videoRouter);
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/videos", videoRouter);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, ()=>{
