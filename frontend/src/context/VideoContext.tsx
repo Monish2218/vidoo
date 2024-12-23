@@ -1,6 +1,7 @@
 import {createContext, useContext, useState, useEffect, ReactNode, useMemo} from 'react';
 import { getVideos } from '@/services/api';
 import { Video } from '@/services/types';
+import { useAuth } from './AuthContext';
 
 interface VideoContextType {
   videos: Video[];
@@ -12,6 +13,7 @@ const VideoContext = createContext<VideoContextType | null>(null);
 export const VideoProvider = ({children}: {children: ReactNode}) => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const {user} = useAuth();
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -19,13 +21,14 @@ export const VideoProvider = ({children}: {children: ReactNode}) => {
             const data = await getVideos();
             setVideos(data);
         } catch (error) {
-            console.error(error);
+          setVideos([]);
+          console.error(error);
         } finally {
             setLoading(false);
         }
     };
     fetchVideos();
-  }, []);
+  }, [user]);
 
   const value = useMemo(() => ({ videos, loading }), [videos, loading]);
 
