@@ -1,44 +1,19 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState} from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, Filter } from 'lucide-react'
-import { getVideos } from "@/services/api"
 import { Link } from "react-router"
-
-interface Video {
-  _id: string
-  user: string
-  title: string
-  description: string
-  url: string
-  thumbnail?: string
-  score?: number
-  tags: string[]
-  uploadedAt: string
-}
+import { useVideos } from "@/context/VideoContext"
 
 export function VideoGrid() {
   const [searchQuery, setSearchQuery] = useState("")
   const [activeFilter, setActiveFilter] = useState("all")
-  const [videos, setVideos] = useState<Video[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchVideos = async () => {
-      try {
-        const fetchVideos = await getVideos()
-        setVideos(fetchVideos)
-      } catch (error) {
-        console.error('Error fetching videos: ', error)
-        //TODO: Show error message to the user
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    fetchVideos()
-  }, [])
+ 
+  const videosContext = useVideos()
+  const isLoading = videosContext?.loading;
+  const videos = videosContext?.videos || [];
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
