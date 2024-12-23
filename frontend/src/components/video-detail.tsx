@@ -3,9 +3,16 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { useVideos } from "@/context/VideoContext"
 import { ArrowLeft, Share2, Download, Edit } from 'lucide-react'
+import { useParams } from "react-router"
 
 export function VideoDetail() {
+  const videosContext = useVideos()
+  const videos = videosContext?.videos || [];
+  const videoId = useParams().id;
+  const video = videos.find(video => video._id === videoId);
+
   return (
     <div className="min-h-screen bg-white">
       <header className="border-b">
@@ -14,7 +21,7 @@ export function VideoDetail() {
             <Button variant="ghost" size="icon">
               <ArrowLeft className="w-4 h-4" />
             </Button>
-            <h1 className="text-xl font-semibold">Video title ipsum dolor sit amet</h1>
+            <h1 className="text-xl font-semibold">{video?.title}</h1>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm">
@@ -38,19 +45,21 @@ export function VideoDetail() {
               <video
                 controls
                 className="w-full h-full"
-                src="/placeholder.mp4"
+                src={video?.url}
               />
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium">Hashtags</label>
-                <Input defaultValue="#ViralScore #BuzzMeter #ContentImpact" />
+                <label htmlFor="hashtags" className="text-sm font-medium">Hashtags</label>
+                <Input id="hashtags" defaultValue="#ViralScore #BuzzMeter #ContentImpact" value={video?.tags} />
               </div>
               <div>
-                <label className="text-sm font-medium">Description</label>
+                <label htmlFor="description" className="text-sm font-medium">Description</label>
                 <Textarea
+                  id="description"
                   className="min-h-[200px]"
                   defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
+                  value={video?.description}
                 />
               </div>
             </div>

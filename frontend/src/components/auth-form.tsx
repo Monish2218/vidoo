@@ -3,25 +3,51 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useNavigate } from "react-router-dom"
+import { login, register } from "@/services/api"
+import { useNavigate } from "react-router"
+import { CustomError } from "@/services/types"
+import toast from "react-hot-toast"
+import { useAuth } from "@/context/AuthContext"
 
 export function AuthForm() {
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
   const navigate = useNavigate();
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const {login : setAuthContext} = useAuth();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, isLogin: boolean) => {
     e.preventDefault()
-    setIsLoading(true)
-    navigate("/upload");
-    setIsLoading(false)
+    setIsLoading(true);
+    setError("")
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    try {
+      if(isLogin){
+        const data = await login(email, password);
+        setAuthContext(data.token, data.user);
+        toast.success("Logged in successfully");
+        navigate('/upload');
+      } else {
+        const name = formData.get('name') as string;
+        await register(name, email, password);
+        toast.success("Registered successfully");
+      }     
+    } catch (error: unknown) {
+      setError((error as CustomError)?.response?.data?.message || "An error occurred")
+    } finally{
+      setIsLoading(false);
+    }
   }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-400 to-purple-600">
       <Card className="w-full max-w-md mx-4">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Welcome to Sierra</CardTitle>
+          <CardTitle className="text-2xl font-bold">Welcome to Vidoo</CardTitle>
           <CardDescription>
-            Enter your email to sign in to your account
+            Sign in to your account or create a new one
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -31,14 +57,16 @@ export function AuthForm() {
               <TabsTrigger value="register">Register</TabsTrigger>
             </TabsList>
             <TabsContent value="login">
-              <form onSubmit={onSubmit} className="space-y-4">
+              <form onSubmit={(e) => handleSubmit(e, true)} className="space-y-4">
                 <Input
                   type="email"
+                  name="email"
                   placeholder="Email"
                   required
                 />
                 <Input
                   type="password"
+                  name="password"
                   placeholder="Password"
                   required
                 />
@@ -48,20 +76,23 @@ export function AuthForm() {
               </form>
             </TabsContent>
             <TabsContent value="register">
-              <form onSubmit={onSubmit} className="space-y-4">
+              <form onSubmit={(e) => handleSubmit(e, false)} className="space-y-4">
+                <Input
+                  type="text"
+                  name="name"
+                  placeholder="Name"
+                  required
+                />
                 <Input
                   type="email"
+                  name="email"
                   placeholder="Email"
                   required
                 />
                 <Input
                   type="password"
+                  name="password"
                   placeholder="Password"
-                  required
-                />
-                <Input
-                  type="password"
-                  placeholder="Confirm Password"
                   required
                 />
                 <Button className="w-full" disabled={isLoading}>
@@ -70,6 +101,7 @@ export function AuthForm() {
               </form>
             </TabsContent>
           </Tabs>
+          {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
         </CardContent>
       </Card>
     </div>

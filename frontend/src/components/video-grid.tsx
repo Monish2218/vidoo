@@ -1,33 +1,19 @@
-import { useState } from "react"
+"use client"
+
+import { useState} from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, Filter } from 'lucide-react'
-
-interface Video {
-  id: string
-  title: string
-  thumbnail: string
-  score: number
-  tags: string[]
-  createdAt: string
-}
+import { Link } from "react-router"
+import { useVideos } from "@/context/VideoContext"
 
 export function VideoGrid() {
   const [searchQuery, setSearchQuery] = useState("")
   const [activeFilter, setActiveFilter] = useState("all")
-
-  // Mock data - replace with actual API call
-  const videos: Video[] = [
-    {
-      id: "1",
-      title: "Video title ipsum dolor sit amet, consectetur adipiscing elit",
-      thumbnail: "/placeholder.svg?height=200&width=400",
-      score: 99,
-      tags: ["ViralScore", "BuzzMeter", "ContentImpact"],
-      createdAt: "24 Aug 2023"
-    },
-    // Add more mock videos...
-  ]
+ 
+  const videosContext = useVideos()
+  const isLoading = videosContext?.loading;
+  const videos = videosContext?.videos || [];
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -60,8 +46,9 @@ export function VideoGrid() {
           ))}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {videos.map((video) => (
-            <div key={video.id} className="bg-white rounded-lg overflow-hidden shadow-sm">
+          {!isLoading && videos.map((video) => (
+            <Link to={`/video/${video._id}`} key={video._id}>
+            <div className="bg-white rounded-lg overflow-hidden shadow-sm">
               <div className="relative">
                 <img
                   src={video.thumbnail}
@@ -81,9 +68,10 @@ export function VideoGrid() {
                     </span>
                   ))}
                 </div>
-                <p className="text-sm text-gray-500">Created on: {video.createdAt}</p>
+                <p className="text-sm text-gray-500">Created on: {video.uploadedAt}</p>
               </div>
             </div>
+            </Link>
           ))}
         </div>
       </div>
